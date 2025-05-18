@@ -1,61 +1,152 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Ordination API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Dette projekt er en rekonstruktion af [ordination](https://github.com/YayaTheBehemoth/ordination) – et system til håndtering af medicinordinationer for patienter.  
+Projektet er omskrevet til et Laravel API med Swagger-dokumentation og automatiske tests.
 
-## About Laravel
+## Domænemodel og relationer
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Systemet modellerer følgende centrale klasser og relationer:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Patient**  
+  En patient kan have flere ordinationer.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Laegemiddel**  
+  Et lægemiddel kan indgå i mange ordinationer.
 
-## Learning Laravel
+- **Ordination**  
+  Abstrakt baseklasse for ordinationer.  
+  Underklasser:
+    - **PN** (efter behov):  
+      Indeholder start/slut-dato, antal enheder pr. dosis, og kan anvendes i en given periode.
+    - **DagligFast**:  
+      Indeholder faste doser på fire tidspunkter (morgen, middag, aften, nat) i en given periode.
+    - **DagligSkaev**:  
+      Indeholder et vilkårligt antal doser på specifikke tidspunkter hver dag i en given periode.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Dosis**  
+  Repræsenterer en enkelt dosis (tidspunkt og antal enheder).  
+  Bruges både i DagligFast (fire faste doser) og DagligSkaev (liste af doser).
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Relationer (forenklet UML)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```
+Patient 1---* Ordination *---1 Laegemiddel
+Ordination <|-- PN
+Ordination <|-- DagligFast
+Ordination <|-- DagligSkaev
+DagligFast *---1 Dosis (morgen)
+DagligFast *---1 Dosis (middag)
+DagligFast *---1 Dosis (aften)
+DagligFast *---1 Dosis (nat)
+DagligSkaev 1---* Dosis
+PN 1---* Dato (anvendelsesdatoer)
+```
 
-## Laravel Sponsors
+## Funktionalitet
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Opret, hent og anvend ordinationer (PN, DagligFast, DagligSkaev)
+- Hent patienter og lægemidler
+- Beregn anbefalet dosis pr. døgn
+- Statistik på ordinationer
+- Swagger-dokumenteret API
+- Automatisk database-seeding og tests
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Projektstruktur
 
-## Contributing
+- **app/Models/**  
+  Eloquent-modeller for Patient, Laegemiddel, Ordination, PN, DagligFast, DagligSkaev, Dosis m.fl.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- **app/Repositories/**  
+  Repository-klasser til databaseoperationer for de forskellige modeller.
 
-## Code of Conduct
+- **app/Services/**  
+  Forretningslogik, fx oprettelse og anvendelse af ordinationer.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **app/Http/Controllers/**  
+  API-controllere, som modtager requests og returnerer responses.
 
-## Security Vulnerabilities
+- **app/Http/Requests/**  
+  Form Request-klasser til validering af input.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **app/Http/Resources/**  
+  API Resource-klasser, der formaterer output til JSON.
 
-## License
+- **database/migrations/**  
+  Migrationer til at oprette databasens tabeller.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **database/seeders/**  
+  Seeders til at fylde databasen med testdata.
+
+- **routes/api.php**  
+  Indeholder alle API-ruter.
+
+---
+
+## Kom godt i gang
+
+### 1. Klon projektet
+
+```sh
+git clone https://github.com/YayaTheBehemoth/php_ordination_demo.git
+cd php_ordination_demo
+```
+
+### 2. Installer afhængigheder
+
+```sh
+composer install
+```
+
+### 3. Opret miljøfil og generér nøgle
+
+```sh
+cp .env.example .env
+php artisan key:generate
+```
+
+### 4. Opret SQLite database
+
+- Opret en tom fil i `database`-mappen:
+
+På Linux/macOS eller Git Bash/WSL på Windows:
+```sh
+touch database/database.sqlite
+```
+På Windows (CMD):
+```sh
+type nul > database\database.sqlite
+```
+
+### 5. Kør migrationer og seed databasen
+
+```sh
+php artisan migrate --seed
+```
+
+### 6. Generér Swagger-dokumentation
+
+```sh
+php artisan l5-swagger:generate
+```
+
+### 7. Start serveren
+
+```sh
+php artisan serve
+```
+
+### 8. Åbn API-dokumentation
+
+Gå til [http://localhost:8000/api/documentation](http://localhost:8000/api/documentation) for at se og teste API'et via Swagger UI.
+
+---
+
+## Test
+
+Kør automatiske tests med:
+
+```sh
+php artisan test
+```
