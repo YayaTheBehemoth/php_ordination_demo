@@ -1,0 +1,774 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Ordination API",
+        "description": "API documentation for the PHP version of the Ordination project",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Local API Server"
+        }
+    ],
+    "paths": {
+        "/api/ordination/patienter": {
+            "get": {
+                "tags": [
+                    "Ordination"
+                ],
+                "summary": "Get all patients",
+                "operationId": "795c27060ce7155ca66df9ab0ccf3b1f",
+                "responses": {
+                    "200": {
+                        "description": "List of patients",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Patient"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ordination/laegemidler": {
+            "get": {
+                "tags": [
+                    "Ordination"
+                ],
+                "summary": "Get all medications",
+                "operationId": "99a9e5f882959a17d821263be19dde56",
+                "responses": {
+                    "200": {
+                        "description": "List of medications",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Laegemiddel"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ordination/anbefalet-dosis/{patientId}/{laegemiddelId}": {
+            "get": {
+                "tags": [
+                    "Ordination"
+                ],
+                "summary": "Get recommended daily dosage",
+                "operationId": "2f0288c41a2a5e955cb9eaf1f87690a7",
+                "parameters": [
+                    {
+                        "name": "patientId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "laegemiddelId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recommended dosage",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "dosis": {
+                                            "type": "number",
+                                            "example": 0.75
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ordination/daglig-faste": {
+            "get": {
+                "tags": [
+                    "Ordination"
+                ],
+                "summary": "Get all DagligFast ordinations",
+                "operationId": "f05135514d1f6771a3b069bd015c608f",
+                "responses": {
+                    "200": {
+                        "description": "List of DagligFast",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DagligFast"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ordination/daglig-skaeve": {
+            "get": {
+                "tags": [
+                    "Ordination"
+                ],
+                "summary": "Get all DagligSkaev ordinations",
+                "operationId": "e5746c0b26c96b7f6a6a26b0e7368ef4",
+                "responses": {
+                    "200": {
+                        "description": "List of DagligSkaev",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DagligSkaev"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ordination/pn": {
+            "get": {
+                "tags": [
+                    "Ordination"
+                ],
+                "summary": "Get all PN ordinations",
+                "operationId": "f86f4d92d8047b92e350236eb7db77d2",
+                "responses": {
+                    "200": {
+                        "description": "List of PN ordinations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PN"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Ordination"
+                ],
+                "summary": "Create a PN ordination",
+                "operationId": "f43d057cd4ee72faaf549ae5fad1f5a0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PNRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created PN",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PN"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/ordination/stats/{vfra}/{vtil}/{laegemiddelId}": {
+            "get": {
+                "tags": [
+                    "Ordination"
+                ],
+                "summary": "Get number of ordinations for a medication in a weight range",
+                "operationId": "a734d349ef5a7ad9267ccc14396b1471",
+                "parameters": [
+                    {
+                        "name": "vfra",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "vtil",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "laegemiddelId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Count of relevant ordinations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "count": {
+                                            "type": "integer",
+                                            "example": 3
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ordination/daglig-fast": {
+            "post": {
+                "tags": [
+                    "Ordination"
+                ],
+                "summary": "Create a DagligFast ordination",
+                "operationId": "69d65ef69a51c8becac59857b2f8bc24",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DagligFastRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created DagligFast",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DagligFast"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/ordination/daglig-skaev": {
+            "post": {
+                "tags": [
+                    "Ordination"
+                ],
+                "summary": "Create a DagligSkaev ordination",
+                "operationId": "2d70a85a563f5183219328f310f4dca8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DagligSkaevRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created DagligSkaev",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DagligSkaev"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/ordination/anvend": {
+            "post": {
+                "tags": [
+                    "Ordination"
+                ],
+                "summary": "Mark a PN ordination as used on a specific date",
+                "operationId": "7af20d92780ca4b3240f95164954cf8a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AnvendOrdinationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Result message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Din anmodning er blevet godkendt, ordinationen kan anvendes"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Patient": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "cprnr": {
+                        "type": "string",
+                        "example": "121256-0512"
+                    },
+                    "navn": {
+                        "type": "string",
+                        "example": "Jane Jensen"
+                    },
+                    "vaegt": {
+                        "type": "number",
+                        "example": 63.4
+                    }
+                },
+                "type": "object"
+            },
+            "Laegemiddel": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "navn": {
+                        "type": "string",
+                        "example": "Paracetamol"
+                    },
+                    "enhedPrKgPrDoegnLet": {
+                        "type": "number",
+                        "example": 0.1
+                    },
+                    "enhedPrKgPrDoegnNormal": {
+                        "type": "number",
+                        "example": 0.15
+                    },
+                    "enhedPrKgPrDoegnTung": {
+                        "type": "number",
+                        "example": 0.2
+                    },
+                    "enhed": {
+                        "type": "string",
+                        "example": "ml"
+                    }
+                },
+                "type": "object"
+            },
+            "Dosis": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "tidspunkt": {
+                        "type": "string",
+                        "example": "08:00"
+                    },
+                    "antal": {
+                        "type": "number",
+                        "example": 1.5
+                    }
+                },
+                "type": "object"
+            },
+            "PN": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "PN"
+                    },
+                    "start_den": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-01"
+                    },
+                    "slut_den": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-07"
+                    },
+                    "antal_enheder": {
+                        "type": "number",
+                        "example": 2
+                    },
+                    "laegemiddel": {
+                        "$ref": "#/components/schemas/Laegemiddel"
+                    },
+                    "dates": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Dato"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "DagligFast": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "DagligFast"
+                    },
+                    "start_den": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-01"
+                    },
+                    "slut_den": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-07"
+                    },
+                    "laegemiddel": {
+                        "$ref": "#/components/schemas/Laegemiddel"
+                    },
+                    "morgen_dosis": {
+                        "$ref": "#/components/schemas/Dosis"
+                    },
+                    "middag_dosis": {
+                        "$ref": "#/components/schemas/Dosis"
+                    },
+                    "aften_dosis": {
+                        "$ref": "#/components/schemas/Dosis"
+                    },
+                    "nat_dosis": {
+                        "$ref": "#/components/schemas/Dosis"
+                    }
+                },
+                "type": "object"
+            },
+            "DagligSkaev": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "DagligSkaev"
+                    },
+                    "start_den": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-03"
+                    },
+                    "slut_den": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-08"
+                    },
+                    "laegemiddel": {
+                        "$ref": "#/components/schemas/Laegemiddel"
+                    },
+                    "doser": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Dosis"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Dato": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "dato": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-02"
+                    },
+                    "pn_ordination_id": {
+                        "type": "integer",
+                        "example": 5
+                    }
+                },
+                "type": "object"
+            },
+            "PNRequest": {
+                "required": [
+                    "patientId",
+                    "laegemiddelId",
+                    "antal",
+                    "startDato",
+                    "slutDato"
+                ],
+                "properties": {
+                    "patientId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "laegemiddelId": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "antal": {
+                        "type": "number",
+                        "example": 2
+                    },
+                    "startDato": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-01"
+                    },
+                    "slutDato": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-07"
+                    }
+                },
+                "type": "object"
+            },
+            "DagligFastRequest": {
+                "required": [
+                    "patientId",
+                    "laegemiddelId",
+                    "morgen",
+                    "middag",
+                    "aften",
+                    "nat",
+                    "startDato",
+                    "slutDato"
+                ],
+                "properties": {
+                    "patientId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "laegemiddelId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "morgen": {
+                        "required": [
+                            "tidspunkt",
+                            "antal"
+                        ],
+                        "properties": {
+                            "tidspunkt": {
+                                "type": "string",
+                                "example": "08:00"
+                            },
+                            "antal": {
+                                "type": "number",
+                                "example": 1
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "middag": {
+                        "required": [
+                            "tidspunkt",
+                            "antal"
+                        ],
+                        "properties": {
+                            "tidspunkt": {
+                                "type": "string",
+                                "example": "12:00"
+                            },
+                            "antal": {
+                                "type": "number",
+                                "example": 1
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "aften": {
+                        "required": [
+                            "tidspunkt",
+                            "antal"
+                        ],
+                        "properties": {
+                            "tidspunkt": {
+                                "type": "string",
+                                "example": "18:00"
+                            },
+                            "antal": {
+                                "type": "number",
+                                "example": 1
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "nat": {
+                        "required": [
+                            "tidspunkt",
+                            "antal"
+                        ],
+                        "properties": {
+                            "tidspunkt": {
+                                "type": "string",
+                                "example": "22:00"
+                            },
+                            "antal": {
+                                "type": "number",
+                                "example": 1
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "startDato": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-01"
+                    },
+                    "slutDato": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-07"
+                    }
+                },
+                "type": "object"
+            },
+            "DagligSkaevRequest": {
+                "required": [
+                    "patientId",
+                    "laegemiddelId",
+                    "doser",
+                    "startDato",
+                    "slutDato"
+                ],
+                "properties": {
+                    "patientId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "laegemiddelId": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "doser": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "tidspunkt": {
+                                    "type": "string",
+                                    "example": "08:00"
+                                },
+                                "antal": {
+                                    "type": "number",
+                                    "example": 1
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "startDato": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-01"
+                    },
+                    "slutDato": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-07"
+                    }
+                },
+                "type": "object"
+            },
+            "AnvendOrdinationRequest": {
+                "required": [
+                    "pnId",
+                    "date"
+                ],
+                "properties": {
+                    "pnId": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-05-03"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Ordination",
+            "description": "Ordination API endpoints"
+        }
+    ]
+}
